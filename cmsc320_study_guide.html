@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMSC 320 Final Exam Study Guide</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 1;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-bottom: 1px solid #334155;
+      padding: 20px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header p {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    .note-badge {
+      margin-left: auto;
+      background: #1e3a5f;
+      border: 1px solid #3b82f6;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 13px;
+      color: #93c5fd;
+      white-space: nowrap;
+    }
+
+    #search {
+      width: 100%;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      background: #1e293b;
+      color: #e2e8f0;
+      font-size: 14px;
+      outline: none;
+    }
+
+    #search::placeholder {
+      color: #64748b;
+    }
+
+    /* Layout */
+    .layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      padding: 20px 12px;
+      position: sticky;
+      top: 100px;
+      align-self: flex-start;
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+    }
+
+    .sidebar button {
+      width: 100%;
+      text-align: left;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      background: transparent;
+      color: #94a3b8;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+
+    .sidebar button.active {
+      border-left-color: var(--color);
+      color: var(--color);
+    }
+
+    .sidebar button:hover:not(.active) {
+      background: #1e293b;
+      color: #e2e8f0;
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      padding: 24px 20px;
+      min-width: 0;
+    }
+
+    .section-header h2 {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .section-header p {
+      color: #64748b;
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+
+    /* Subsection */
+    .subsection {
+      margin-bottom: 20px;
+      background: #1e293b;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #334155;
+    }
+
+    .subsection-toggle {
+      width: 100%;
+      text-align: left;
+      padding: 14px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #f1f5f9;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .subsection-toggle .arrow {
+      font-size: 16px;
+      transition: transform 0.2s;
+      display: inline-block;
+    }
+
+    .subsection-toggle.open .arrow {
+      transform: rotate(180deg);
+    }
+
+    .subsection-body {
+      padding: 4px 16px 16px;
+      display: none;
+    }
+
+    .subsection-body.open {
+      display: block;
+    }
+
+    /* Term card */
+    .term-card {
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      border-left: 3px solid var(--color);
+      background: #0f172a;
+    }
+
+    .term-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--color);
+      margin-bottom: 5px;
+    }
+
+    .term-def {
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* Search results */
+    .search-section {
+      margin-bottom: 32px;
+    }
+
+    .search-section h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .search-sub-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      margin-top: 12px;
+    }
+
+    .no-results {
+      color: #64748b;
+    }
+
+    .search-intro {
+      color: #94a3b8;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    /* Footer */
+    .footer {
+      background: #1e293b;
+      border-top: 1px solid #334155;
+      padding: 20px 24px;
+      margin-top: 40px;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 16px;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+
+    .quick-card {
+      background: #0f172a;
+      border-radius: 8px;
+      padding: 10px 14px;
+      border: 1px solid #334155;
+    }
+
+    .quick-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #60a5fa;
+      margin-bottom: 4px;
+    }
+
+    .quick-val {
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <div class="header-inner">
+      <div class="header-row">
+        <div>
+          <h1>CMSC 320 — Final Exam Study Guide</h1>
+          <p>Introduction to Data Science · L2–L25 · All Key Terms & Concepts</p>
+        </div>
+        <div class="note-badge">📝 1 side letter paper allowed</div>
+      </div>
+      <input id="search" type="text" placeholder="🔍 Search any term or concept..." oninput="handleSearch(this.value)">
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="main" id="main"></div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-inner">
+      <h3>⚡ Quick Memory Aids</h3>
+      <div class="quick-grid" id="quick-grid"></div>
+    </div>
+  </div>
+
+  <script>
+    const sections = [
+      {
+        id: "overview", title: "📊 Data Science Overview", color: "#6366f1",
+        subsections: [
+          {
+            title: "What is Data Science?", content: [
+              { term: "Data Science", def: "Application of computational and statistical techniques to address or gain insight into real-world problems." },
+              { term: "Data Mining", def: "Probing datasets to identify patterns and anomalies. A SUBSET of Data Science." },
+              { term: "Machine Learning", def: "Algorithms and statistical models that enable systems to learn and improve without being explicitly programmed." },
+              { term: "Drew Conway Venn Diagram", def: "Core skills: Statistics/Math, Computer Science, and Domain Expertise — all three are needed for Data Science." },
+            ]
+          },
+          {
+            title: "The Data Science Life Cycle", content: [
+              { term: "Step 1: Data Collection", def: "Systematically gather relevant info from external sources, internal datastores, APIs. Can be PRIMARY (you collect) or SECONDARY (someone else collected)." },
+              { term: "Step 2: Data Processing", def: "Clean, scrub, and sanity-check. Handle: duplicates, formatting, outliers, mistakes, transformations, sampling." },
+              { term: "Step 3: Exploratory Analysis & Data Viz", def: "Figure out what you have, extract insights, understand patterns. Visualize to see trends." },
+              { term: "Step 4: Analysis, Hypothesis Testing & ML", def: "Build models, test hypotheses, make predictions." },
+              { term: "Step 5: Insight & Policy Decision", def: "Interpret results and communicate findings to stakeholders." },
+              { term: "⚠️ Key Point", def: "Data Science is NOT linear — you constantly loop back to previous steps!" },
+            ]
+          },
+          {
+            title: "Big Data: The 5 Vs", content: [
+              { term: "Volume", def: "Very high number of data points. At least terabytes, often petabytes." },
+              { term: "Velocity", def: "Speed of data generation, collection, and processing. Real-time analytics." },
+              { term: "Variety", def: "Wide range of data types: databases, streams, photos, videos, text, etc." },
+              { term: "Veracity", def: "Trustworthiness and quality of the data. How do you remove noise?" },
+              { term: "Value", def: "The usefulness and importance of the data for gaining insights." },
+            ]
+          },
+          {
+            title: "Data Types & Formats", content: [
+              { term: "Quantitative Data", def: "Numerical and measurable. Types: Discrete (countable) and Continuous (any value in range)." },
+              { term: "Qualitative Data", def: "Non-numerical, descriptive, interpretive." },
+              { term: "Structured Data", def: "Fits into predefined tables. Uses discrete data types: numbers, short text, dates." },
+              { term: "Unstructured Data", def: "Doesn't fit neatly into tables. Ex: audio, video, large text, biometrics." },
+              { term: "Tabular / CSV", def: "Rows and columns. CSV = comma separated, TSV = tab separated. Delimiter = separator character." },
+              { term: "JSON", def: "JavaScript Object Notation. Key-value pairs in hierarchical structure. Types: objects, arrays, strings, numbers, booleans, null." },
+              { term: "XML / HTML", def: "Markup languages using tags to define structure. HTML = web pages. XML = data interchange." },
+              { term: "Graph Data", def: "Nodes (vertices) and edges representing relationships. Ex: social networks, roads." },
+              { term: "Image Data", def: "Grid of pixels. Each pixel = RGB value (0–255 per channel). Resolution = width × height in pixels." },
+              { term: "API / RESTful API", def: "Structured and documented way to access data. 'If you send a specific request, I return structured data.' Use Python requests library." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "experimental", title: "🔬 Experimental Design", color: "#8b5cf6",
+        subsections: [
+          {
+            title: "Key Terms", content: [
+              { term: "Experimental Design", def: "Systematic method for planning research to establish cause-and-effect relationships." },
+              { term: "Population", def: "The ENTIRE group you want to learn about." },
+              { term: "Sample", def: "A smaller group from the population that you actually study." },
+              { term: "Variable", def: "Any characteristic recorded for subjects in a study." },
+              { term: "Independent Variable (IV)", def: "The factor you manipulate/change. The CAUSE." },
+              { term: "Dependent Variable (DV)", def: "The outcome you measure. The EFFECT. Changes as a result of IV." },
+              { term: "Hypothesis", def: "A testable statement/explanation addressing the research question. 'If X, then Y.'" },
+              { term: "Control Group", def: "Receives no intervention; baseline for comparison." },
+              { term: "Treatment Group", def: "Receives the intervention you want to test." },
+            ]
+          },
+          {
+            title: "Confounding Variables", content: [
+              { term: "Confounding Variable (Confounder)", def: "An extraneous variable that can affect the relationship between IV and DV. Can lead to INCORRECT conclusions." },
+              { term: "Classic Example", def: "Foot size and literacy are correlated — but AGE is the confounder. Controlling for age removes the spurious relationship." },
+              { term: "Control (technique)", def: "Manage/eliminate the impact of confounders. Collect the confounding variable and include it in analysis." },
+              { term: "Randomization (technique)", def: "Randomly assign participants to groups to minimize systematic confounding and reduce bias." },
+              { term: "Replication (technique)", def: "Repeat the study multiple times. Same conclusions = stronger evidence against confounders." },
+            ]
+          },
+          {
+            title: "Data Collection Methods", content: [
+              { term: "Observational Studies", def: "Observe and record WITHOUT intervening or manipulating variables." },
+              { term: "Cross-sectional", def: "Data from many individuals at ONE specific point in time. 'Snapshot.'" },
+              { term: "Retrospective (Case-Control)", def: "Look BACKWARD at past events to examine exposure-outcome relationships." },
+              { term: "Prospective (Longitudinal/Cohort)", def: "Follow a group OVER TIME. High dropout rates are a problem." },
+              { term: "Surveys", def: "Structured questionnaires. Be very careful of wording and question ordering (bias!)." },
+              { term: "Experiments", def: "Researcher actively changes something (applies treatment) and observes the response." },
+              { term: "Placebo Effect", def: "Person believes treatment is working even when given a dummy/fake treatment." },
+              { term: "Single-blind", def: "Either participants OR researchers don't know who gets real treatment." },
+              { term: "Double-blind", def: "BOTH participants AND researchers don't know. Minimizes bias best." },
+              { term: "Simulation", def: "Mathematical/computer model to replicate conditions. Used when real situation is too dangerous/expensive." },
+              { term: "Fundamental Rule", def: "Your data MUST be representative of the population you want to study." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "pandas", title: "🐼 Pandas & SQL", color: "#0ea5e9",
+        subsections: [
+          {
+            title: "Pandas Basics", content: [
+              { term: "Series", def: "1D labeled array (like a column). Has index + values. Subclass of numpy.ndarray." },
+              { term: "DataFrame", def: "2D labeled table — a collection of Series. Most commonly used Pandas object." },
+              { term: "pd.read_csv('file.csv')", def: "Load CSV file into DataFrame." },
+              { term: "df.head(n)", def: "Show first n rows (default 5)." },
+              { term: "df.tail(n)", def: "Show last n rows (default 5)." },
+              { term: "df.shape", def: "Returns (rows, columns) tuple." },
+              { term: "df.columns", def: "List all column names." },
+              { term: "df.dtypes", def: "Data types of each column." },
+              { term: "df.describe()", def: "Summary statistics: count, mean, std, min, max, quartiles." },
+              { term: "df.info()", def: "Overview of columns and types." },
+            ]
+          },
+          {
+            title: "Pandas Operations", content: [
+              { term: "df['col']", def: "Select a single column (returns Series)." },
+              { term: "df[['c1','c2']]", def: "Select multiple columns." },
+              { term: "df.iloc[0]", def: "Select row by integer index." },
+              { term: "df[df['col'] > x]", def: "Boolean indexing — filter rows by condition." },
+              { term: "df['col'].value_counts()", def: "Count occurrences of each unique value. Returns in descending order." },
+              { term: "df.groupby('col')['target'].func()", def: "Split-Apply-Combine: group by column, select target, apply function (sum, mean, count, etc.)." },
+              { term: "df.merge() / JOIN", def: "Combine DataFrames. Types: inner, left, right, full outer." },
+              { term: "df.drop_duplicates()", def: "Remove exact duplicate rows." },
+              { term: "df.dropna()", def: "Drop rows with missing values." },
+              { term: "df['col'].apply(func)", def: "Apply a custom function to every element in a column." },
+              { term: "df.corr()", def: "Pairwise Pearson correlation coefficients between all numeric columns." },
+            ]
+          },
+          {
+            title: "SQL", content: [
+              { term: "SQL", def: "Structured Query Language. Standard language for relational databases." },
+              { term: "Primary Key", def: "Unique identifier for every tuple (row) in a relation. Each tuple has exactly one." },
+              { term: "Foreign Key", def: "Attribute(s) that point to another table's primary key." },
+              { term: "SELECT col FROM table WHERE cond", def: "Basic query structure. * selects all columns." },
+              { term: "ORDER BY col DESC/ASC", def: "Sort results. DESC = descending, ASC = ascending." },
+              { term: "DISTINCT", def: "Remove duplicates: SELECT DISTINCT Country FROM Customers;" },
+              { term: "AND / OR / NOT", def: "Combine conditions in WHERE clause." },
+              { term: "GROUP BY + aggregate", def: "Group rows with same values. Use with COUNT(), SUM(), AVG(), MIN(), MAX()." },
+              { term: "HAVING", def: "Filter GROUPS after aggregation. WHERE doesn't work with aggregates. Must follow GROUP BY." },
+              { term: "INNER JOIN", def: "Returns ONLY rows with matches in BOTH tables." },
+              { term: "LEFT JOIN", def: "All rows from left table; matching from right (NULLs where no match)." },
+              { term: "RIGHT JOIN", def: "All rows from right table; matching from left (NULLs where no match)." },
+              { term: "FULL OUTER JOIN", def: "All rows from both tables; NULLs where no matches." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "statistics", title: "📐 Statistics & Hypothesis Testing", color: "#10b981",
+        subsections: [
+          {
+            title: "Descriptive Statistics", content: [
+              { term: "Mean (μ)", def: "Average of all values. Central tendency of a normal distribution." },
+              { term: "Median", def: "The middle number in an ordered dataset. Robust to outliers." },
+              { term: "Mode", def: "The most frequent value." },
+              { term: "Range", def: "Max − Min." },
+              { term: "Variance (σ²)", def: "Average degree to which each value differs from the mean. Population: divide by n. Sample: divide by n-1." },
+              { term: "Standard Deviation (σ)", def: "Spread of values from mean. Same units as the variable." },
+              { term: "Skewness", def: "Measure of asymmetry. Right/Positive skew = tail on right. Left/Negative = tail on left. Normal = 0." },
+              { term: "Modality", def: "Number of peaks. Unimodal(1), Bimodal(2), Trimodal(3), Multimodal(3+)." },
+            ]
+          },
+          {
+            title: "Normal Distribution & Z-Scores", content: [
+              { term: "Normal Distribution", def: "Symmetric, no skew. Fully described by μ and σ. Bell-shaped curve." },
+              { term: "Empirical Rule (68-95-99 Rule)", def: "68% within 1σ; 95% within 2σ; 99% within 3σ of mean." },
+              { term: "Standard Normal Distribution", def: "Special case: μ=0, σ=1. Also called z-distribution." },
+              { term: "Z-Score Formula", def: "Z = (x − μ) / σ. How many standard deviations a value is from the mean." },
+              { term: "Z-Score Interpretation", def: "+z: above mean. -z: below mean. 0: equals mean." },
+              { term: "Z-Score Example", def: "μ=100, σ=15, score=115: Z=(115-100)/15 = 1. Score is 1 SD above mean." },
+            ]
+          },
+          {
+            title: "Central Limit Theorem (CLT)", content: [
+              { term: "CLT Statement", def: "'Given sufficiently large sample size (n≥30), the sampling distribution of the mean approximates a normal distribution regardless of original distribution.'" },
+              { term: "Standard Error (SE)", def: "SE = σ / √n. Standard deviation of the sampling distribution. Decreases as n increases." },
+              { term: "SD vs SE", def: "SD = variability WITHIN a sample. SE = variability ACROSS samples (how far sample mean is from population mean)." },
+              { term: "95% Confidence Interval", def: "sample mean ± 1.96 × SE. Range where true population mean likely falls." },
+            ]
+          },
+          {
+            title: "Hypothesis Testing Steps", content: [
+              { term: "Step 1: H₀ (Null Hypothesis)", def: "Statement of NO effect or NO difference. Currently accepted value." },
+              { term: "Step 2: Hₐ (Alternative Hypothesis)", def: "Contradicts H₀. What you think might be true." },
+              { term: "Step 3: α (Significance Level)", def: "Threshold for decision. CHOSEN not calculated. Typically 0.05 or 0.01. α = 1 − Confidence Level." },
+              { term: "Step 4–6: Choose Test, Collect Data, Calculate Statistic", def: "T-statistic = (x̄ − μ₀) / (s/√n)." },
+              { term: "Step 7: p-value", def: "P(observing this statistic | H₀ is true). Low p-value = strong evidence against H₀." },
+              { term: "Step 8: Decision", def: "p ≤ α → REJECT H₀ (statistically significant). p > α → FAIL to reject H₀." },
+              { term: "Type I Error (False Positive)", def: "Reject H₀ when it's actually TRUE. Probability = α." },
+              { term: "Type II Error (False Negative)", def: "Fail to reject H₀ when it's actually FALSE." },
+            ]
+          },
+          {
+            title: "Statistical Tests", content: [
+              { term: "One-Sample T-test", def: "Test if sample mean differs significantly from known population mean. scipy: ttest_1samp(data, popmean=μ₀)" },
+              { term: "Two-Sample T-test", def: "Test if means of two independent samples are significantly different. scipy: ttest_ind(group1, group2)" },
+              { term: "Two-Tailed Test", def: "Hₐ: μ ≠ μ₀. Reject if statistic is too small OR too large. Split α into α/2 on each tail." },
+              { term: "Left-Tailed Test", def: "Rejection region on the LEFT. Hₐ: μ < μ₀." },
+              { term: "Right-Tailed Test", def: "Rejection region on the RIGHT. Hₐ: μ > μ₀." },
+              { term: "Pearson Correlation (r)", def: "Tests linear correlation between 2 variables. Range: -1 to 1. 1=perfect positive, -1=perfect negative, 0=no linear relationship." },
+              { term: "Chi-Squared Test", def: "Non-parametric. Compares two categorical variables. No normality assumption." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "visualization", title: "📈 Data Visualization & EDA", color: "#f59e0b",
+        subsections: [
+          {
+            title: "Visualization Types", content: [
+              { term: "Line Chart", def: "Display trends over time. Best for continuous data with a time axis." },
+              { term: "Bar Chart", def: "Compare data between groups. Stacked bar: shows breakdown within categories." },
+              { term: "Scatter Plot", def: "Relationship between 2 continuous variables. Each dot = one observation." },
+              { term: "Bubble Plot", def: "Scatter plot + third variable encoded as bubble size." },
+              { term: "Histogram", def: "Shows frequency distribution of numerical data using rectangles (bins)." },
+              { term: "Pie Chart", def: "Shows proportions/shares. Each slice = percentage of whole." },
+              { term: "Box & Whisker Plot", def: "Shows distribution: median, Q1, Q3, whiskers, outliers." },
+              { term: "Network/Graph Diagram", def: "Nodes = entities, edges = relationships." },
+            ]
+          },
+          {
+            title: "Common Visualization Mistakes", content: [
+              { term: "Non-zero baseline", def: "Truncating y-axis inflates differences. Makes small differences look huge." },
+              { term: "Changing scale", def: "Different scales on the same chart without making it clear." },
+              { term: "Cherry-picking", def: "Only showing subset of data that supports your story." },
+              { term: "Style over substance", def: "3D pie charts, pictograms that mislead understanding." },
+              { term: "Preattentive features", def: "Color, size, tilt — processed automatically by the brain. Use thoughtfully." },
+              { term: "Anscombe's Quartet", def: "4 datasets with same mean, variance, correlation — but clearly different when visualized. Always visualize!" },
+            ]
+          },
+          {
+            title: "EDA (Exploratory Data Analysis)", content: [
+              { term: "EDA Goal", def: "Deeply understand your data: build understanding, discover patterns, spot anomalies, check assumptions." },
+              { term: "Univariate Analysis", def: "Analyze individual variables. Use summary statistics, histograms, box plots." },
+              { term: "Bivariate Analysis", def: "Relationship between 2 variables. Use scatter plots, correlation, cross-tabulation." },
+              { term: "Multivariate Analysis", def: "Multiple variables. Use pair plots, correlation matrices." },
+              { term: "df.corr()", def: "Pairwise Pearson correlation. 1=perfect positive, -1=perfect negative, 0=no linear relationship." },
+              { term: "sns.pairplot()", def: "Seaborn pairplot — visualize relationships between all pairs of variables." },
+              { term: "Structure, Granularity, Scope, Temporality, Faithfulness", def: "General considerations when exploring any dataset." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "cleaning", title: "🧹 Data Cleaning", color: "#ef4444",
+        subsections: [
+          {
+            title: "Types of Dirty Data", content: [
+              { term: "Missing Data (MCAR)", def: "Missing Completely At Random. No pattern; unrelated to dataset. Ex: scale battery died." },
+              { term: "Missing Data (MAR)", def: "Missing At Random. Missing due to other observed data. Ex: older patients skip mental health questions." },
+              { term: "Missing Data (MNAR)", def: "Missing NOT At Random. Missing value related to the value itself. Ex: high earners don't report income." },
+              { term: "Outliers", def: "Data points that significantly deviate from the majority. Detect with: z-scores (|z|>2) or box plots." },
+              { term: "Duplicate Records", def: "Identical instances. Use df.drop_duplicates(). ALWAYS CHECK!" },
+            ]
+          },
+          {
+            title: "Handling Missing Data", content: [
+              { term: "Drop it (df.dropna())", def: "Remove rows/columns with missing values. Good when <1% missing and lots of data." },
+              { term: "Mean Imputation", def: "Replace missing with column mean. Use for numeric, non-skewed data. Only when <5% missing." },
+              { term: "Median Imputation", def: "Replace missing with column median. Use for numeric, SKEWED data." },
+              { term: "Mode Imputation", def: "Replace missing with most common value. Use for string/categorical data." },
+              { term: "Hot-Deck Imputation", def: "Replace missing with value from the most similar record in the SAME dataset." },
+              { term: "Cold-Deck Imputation", def: "Replace missing with value from a DIFFERENT dataset." },
+              { term: "KNN Imputation", def: "Replace with mean value from k-nearest neighbors." },
+            ]
+          },
+          {
+            title: "Detecting Incorrect Data", content: [
+              { term: "Attractors", def: "Unusual spikes/concentrations of data points at specific values." },
+              { term: "Discontinuities", def: "Abrupt changes or shifts in data (e.g., law changed, collection method changed)." },
+              { term: "Modes that don't make sense", def: "Large number of 0,0 lat/longs, Unix epoch timestamps (1970-01-01), Excel default dates (1900-01-01)." },
+              { term: "Boundary Conditions", def: "Data outside valid bounds. Ex: 1,000,000 hours playing video games." },
+              { term: "Data Typing", def: "Data in wrong format. Use df[col].astype(type) or .apply() for conversions." },
+              { term: "Evolving Labels", def: "Categories change midway. Solutions: split dataset by time, infer old ratings, map old → new." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "ml_basics", title: "🤖 ML Fundamentals", color: "#3b82f6",
+        subsections: [
+          {
+            title: "Core ML Vocabulary", content: [
+              { term: "Examples / Observations", def: "The records (rows) in your input dataset." },
+              { term: "Features / Attributes / Dimensions", def: "The variable inputs used by ML models (columns)." },
+              { term: "Feature Vector", def: "n-dimensional vector of numerical features representing one observation/row." },
+              { term: "Label", def: "An attribute you want to predict. Either pre-assigned or inferred by the model." },
+              { term: "Algorithm", def: "Takes training data as input, builds the model. Ex: KNN, Decision Trees." },
+              { term: "Model", def: "Output of the ML algorithm. Stores what was learned. Deployable." },
+              { term: "Hyperparameter", def: "Set BEFORE training (not learned). Ex: K in KNN, depth in Decision Trees." },
+              { term: "Parameter (Model Parameter)", def: "Learned FROM training data. Part of the model itself. Ex: weights in regression." },
+              { term: "Training", def: "Feeding training data to an algorithm so it learns patterns." },
+              { term: "Validation", def: "Evaluate model DURING training. Used for hyperparameter tuning. NOT used to train." },
+              { term: "Testing", def: "Expose FINAL model to new, previously unseen data to evaluate performance." },
+              { term: "Splits", def: "Training (~75%), Validation (~10-15%), Test (~15%). All should have similar distributions." },
+            ]
+          },
+          {
+            title: "Types of ML", content: [
+              { term: "Supervised Learning", def: "Learn from LABELED data. Used for classification and regression." },
+              { term: "Unsupervised Learning", def: "Learn from UNLABELED data. Used for clustering, dimensionality reduction, anomaly detection." },
+              { term: "Semi-supervised Learning", def: "Mix of labeled + unlabeled data." },
+              { term: "Reinforcement Learning", def: "Learn from mistakes/successes via rewards and punishments. Used in robotics, games." },
+              { term: "Regression", def: "Supervised. Predict continuous numerical values. Ex: house price." },
+              { term: "Classification", def: "Supervised. Predict a discrete category/label. Ex: spam or not spam." },
+              { term: "Clustering", def: "Unsupervised. Find natural groupings in data." },
+              { term: "No Free Lunch Theorem (NFL)", def: "There is NO single algorithm that works well for all tasks." },
+            ]
+          },
+          {
+            title: "Distance Metrics", content: [
+              { term: "Euclidean Distance (L2)", def: "Straight-line distance. Most common. Sensitive to outliers. Best for continuous numeric data." },
+              { term: "Manhattan Distance (L1)", def: "Sum of absolute differences. 'City block' distance." },
+              { term: "Hamming Distance", def: "Count of positions where two strings/vectors differ. Used for text classification, DNA." },
+              { term: "Cosine Similarity", def: "Measures angle between two vectors. Range -1 to 1. Best for text/high-dimensional data." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "algorithms", title: "⚙️ ML Algorithms", color: "#7c3aed",
+        subsections: [
+          {
+            title: "KNN (K-Nearest Neighbors)", content: [
+              { term: "KNN Idea", def: "Classify new examples based on the K most similar training examples. Predict based on similarity/proximity." },
+              { term: "K (hyperparameter)", def: "Number of neighbors to consider. Usually ODD to prevent ties." },
+              { term: "KNN Classification", def: "Majority vote among K neighbors." },
+              { term: "KNN Regression", def: "Average (mean) of K neighbors' values." },
+              { term: "Weighted KNN", def: "Closer neighbors get higher weight (inverse of distance)." },
+              { term: "Elbow Method (KNN)", def: "Try multiple K values, plot variation, pick the lowest inflection point (elbow)." },
+              { term: "K=1 → Overfitting", def: "Memorizes training data. Jagged decision boundary." },
+              { term: "K=N → Underfitting", def: "Considers all data, predicts mode for everything. Too general." },
+              { term: "KNN is Lazy", def: "No training step — stores entire dataset in memory and uses it directly at prediction time." },
+            ]
+          },
+          {
+            title: "Decision Trees (DT)", content: [
+              { term: "DT Structure", def: "Root node (start), internal nodes (test features), branches (outcomes), leaf nodes (predictions)." },
+              { term: "Height", def: "Number of levels. Binary DT (balanced): h = log₂(n)." },
+              { term: "ID3 Algorithm", def: "Builds DT top-down greedily: maximizes information gain / minimizes entropy at each split." },
+              { term: "Pure Node", def: "All training examples have the same label. Target for DT construction." },
+              { term: "Stopping Criteria", def: "All examples same label; no more features; max depth reached; validation accuracy declining." },
+              { term: "Pre-pruning", def: "Stop growing early. Faster, may miss patterns." },
+              { term: "Post-pruning", def: "Grow full tree, then prune. Most popular. Better accuracy." },
+              { term: "Cost-Complexity Pruning", def: "Cost = Errors + Alpha × (# Nodes). Alpha=0: focus on accuracy. Large Alpha: prefer simplicity." },
+              { term: "DT Strengths", def: "Intuitive, expressive (any boolean function), flexible, fast at prediction." },
+              { term: "DT Weaknesses", def: "Prone to overfitting, unstable, NP-hard to find optimal tree." },
+            ]
+          },
+          {
+            title: "Logistic Regression", content: [
+              { term: "Logistic Regression", def: "Classification algorithm (NOT regression!). Predicts class label by modeling PROBABILITY. Best for binary classification." },
+              { term: "Linear Separability", def: "Assumption: a straight line (hyperplane) can divide the two classes." },
+              { term: "Sigmoid Function", def: "Maps any real number to (0,1). S-shaped. s(0)=0.5. Used to model probability." },
+              { term: "Decision Boundary", def: "The line where P(Y=1) = threshold. Default threshold = 0.5." },
+              { term: "Weights (θ)", def: "Learned by minimizing the cost function using Gradient Descent." },
+              { term: "Threshold Setting", def: "Default: P≥0.5 → positive class. High precision → raise threshold. High recall → lower threshold." },
+            ]
+          },
+          {
+            title: "Random Forests", content: [
+              { term: "Random Forest", def: "Ensemble of Decision Trees. Bootstrap sampling + random feature selection + majority voting." },
+              { term: "Bootstrap Sampling (Bagging)", def: "Create N subsets by randomly sampling WITH replacement. Each trains a different tree." },
+              { term: "Prediction", def: "Classification: majority vote. Regression: average of all trees." },
+              { term: "RF Strengths", def: "Accurate, stable, flexible. Addresses DT overfitting. Fast at prediction. Little tuning needed." },
+              { term: "RF Weaknesses", def: "Harder to interpret, slower to train, poor with high-dimensional sparse data." },
+            ]
+          },
+          {
+            title: "Linear Regression", content: [
+              { term: "Linear Regression", def: "Models linear relationship between features and a continuous output. Finds line of best fit." },
+              { term: "Line Equation (1 feature)", def: "y = β₀ + β₁x. β₀ = intercept, β₁ = slope (rate of change)." },
+              { term: "Multiple Linear Regression", def: "Multiple features: y = β₀ + β₁x₁ + ... + βₙxₙ. Fits a hyperplane." },
+              { term: "Residual Error (ε)", def: "ε = y_actual − y_predicted. Signed vertical distance from data point to line." },
+              { term: "MSE (Mean Squared Error)", def: "MSE = RSS / n. Cost function for linear regression. Minimize this." },
+              { term: "LINE Assumptions", def: "L=Linearity, I=Independence of residuals, N=Normality of residuals, E=Equal variance (homoscedasticity)." },
+              { term: "R² (R-Squared)", def: "Coefficient of determination. Range [0,1] typically. 0=no fit, 1=perfect fit. Can be negative. R² = 1 − RSS/TSS." },
+              { term: "RMSE", def: "Root Mean Squared Error. Same units as y. Lower = better. Good for comparing models on same data." },
+              { term: "Extrapolation", def: "Using regression line far outside the range of original data. DANGEROUS — results are unreliable." },
+            ]
+          },
+          {
+            title: "Gradient Descent", content: [
+              { term: "Gradient Descent", def: "Iterative optimization algorithm. Finds minimum of cost function by following steepest descent direction." },
+              { term: "Gradient (∇J(θ))", def: "Vector of all partial derivatives. Points in direction of STEEPEST INCREASE." },
+              { term: "Update Rule", def: "θⱼ := θⱼ − α × ∂J/∂θⱼ. Move OPPOSITE to gradient to decrease cost." },
+              { term: "Learning Rate (α)", def: "Hyperparameter controlling step size. Too large: overshoot. Too small: slow convergence." },
+              { term: "Convexity", def: "MSE is convex — only ONE minimum. GD is guaranteed to find it." },
+            ]
+          },
+          {
+            title: "Regularization", content: [
+              { term: "Regularization", def: "Add a penalty term to cost function to reduce overfitting by discouraging large coefficients." },
+              { term: "LASSO (L1)", def: "Penalizes |coefficient|. Causes some coefficients to become EXACTLY 0 → feature selection!" },
+              { term: "Ridge (L2)", def: "Penalizes coefficient². Causes all coefficients to be SMALL but not zero." },
+              { term: "Elastic-Net", def: "Hybrid of LASSO and Ridge." },
+              { term: "λ (regularization constant)", def: "Controls penalty strength. λ=0: no regularization. Higher λ: more aggressive penalization." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "evaluation", title: "📏 Model Evaluation", color: "#06b6d4",
+        subsections: [
+          {
+            title: "Classification Metrics", content: [
+              { term: "Accuracy", def: "Correct predictions / Total predictions. Simple but misleading with class imbalance." },
+              { term: "Class Imbalance", def: "When one class dominates (ex: 90% negative). High accuracy can mean model just predicts majority class." },
+              { term: "Confusion Matrix", def: "Table with TP, TN, FP, FN. Summarizes model performance." },
+              { term: "TP (True Positive)", def: "Predicted positive AND actually positive. ✓" },
+              { term: "TN (True Negative)", def: "Predicted negative AND actually negative. ✓" },
+              { term: "FP (False Positive / Type I Error)", def: "Predicted positive BUT actually negative. ✗" },
+              { term: "FN (False Negative / Type II Error)", def: "Predicted negative BUT actually positive. ✗" },
+              { term: "Precision", def: "TP / (TP + FP). 'When we predict positive, how often are we right?' Minimizes false positives." },
+              { term: "Recall (Sensitivity / TPR)", def: "TP / (TP + FN). 'Of all actual positives, how many did we find?' Minimizes false negatives." },
+              { term: "F1 Score", def: "Harmonic mean of precision and recall. Range [0,1]. Use when both FP and FN are important." },
+              { term: "When to use Precision", def: "When FP are costly. Ex: hiring, mushroom edibility (FP = calling poisonous one safe)." },
+              { term: "When to use Recall", def: "When FN are costly. Ex: disease detection (FN = missing a sick person)." },
+              { term: "Log Loss", def: "Penalizes overconfidence in wrong predictions. Lower = better. Used when confidence matters." },
+            ]
+          },
+          {
+            title: "Overfitting & Underfitting", content: [
+              { term: "Overfitting", def: "Model too complex. HIGH variance, low bias. Great on training, poor on new data." },
+              { term: "Underfitting", def: "Model too simple. LOW variance, HIGH bias. Poor on both training and new data." },
+              { term: "Bias", def: "Error from overly simplified model. High bias = underfitting." },
+              { term: "Variance", def: "Error from sensitivity to training data. High variance = overfitting." },
+              { term: "Bias-Variance Tradeoff", def: "Generalization Error = Bias² + Variance + Irreducible Error. Goal: minimize both." },
+              { term: "Tackling Overfitting", def: "More/diverse data, regularization, cross-validation, pruning, ensemble methods." },
+              { term: "Tackling Underfitting", def: "Increase model complexity, feature engineering, more/better data." },
+            ]
+          },
+          {
+            title: "Cross-Validation", content: [
+              { term: "K-Fold Cross-Validation", def: "Split into k folds. Train on k-1, validate on 1. Repeat k times. Average performance." },
+              { term: "Common k choices", def: "k=5 or k=10 (most common; good balance of cost and bias)." },
+              { term: "LOOCV (Leave-One-Out)", def: "k=n. One example as validation each time. Very accurate but expensive. Use for n<1000." },
+              { term: "Purpose", def: "(1) Performance estimation — how well on unseen data? (2) Model selection — which algorithm/hyperparameters?" },
+            ]
+          },
+        ]
+      },
+      {
+        id: "feature_eng", title: "🛠️ Feature Engineering", color: "#f97316",
+        subsections: [
+          {
+            title: "Feature Engineering Overview", content: [
+              { term: "Feature Engineering", def: "Selecting, manipulating, and transforming raw data into better input features for ML. Done BEFORE ML training." },
+              { term: "Areas", def: "Feature Creation, Feature Transformation, Feature Selection, Feature Extraction." },
+              { term: "Curse of Dimensionality", def: "As dimensions increase, data becomes sparse, noise increases. More features ≠ better after some optimal number." },
+            ]
+          },
+          {
+            title: "Feature Transformation", content: [
+              { term: "Normalization (Min-Max)", def: "Scale features to [0,1] range: x_norm = (x − min)/(max − min). Sensitive to outliers. Good for KNN, Neural Networks." },
+              { term: "Standardization (Z-Score)", def: "Scale to mean=0, SD=1. Robust to outliers. Good for KNN, PCA, SVM." },
+              { term: "Log Transformation", def: "Apply log function to reduce skew. Converts skewed distribution closer to normal." },
+              { term: "One-Hot Encoding", def: "Convert categorical variable into binary columns. Each category = its own 0/1 column. Avoids ordinal bias. Downside: dimensionality explosion." },
+              { term: "Discretization / Binning", def: "Convert continuous features to discrete bins. Strategies: Uniform, Clustered, Quantile." },
+            ]
+          },
+          {
+            title: "Feature Selection Methods", content: [
+              { term: "Filter Method", def: "Select features based on statistical performance measures (correlation, chi-square). Algorithm-independent. Fast." },
+              { term: "Wrapper Method", def: "Search feature subsets using ML algorithm's performance. Forward Selection or Backward Elimination." },
+              { term: "Forward Selection", def: "Start with 0 features. Add one at a time that improves performance most." },
+              { term: "Backward Elimination", def: "Start with ALL features. Remove one at a time that hurts performance least." },
+              { term: "Embedded Method", def: "Embed feature selection INTO the ML algorithm. Ex: LASSO, Ridge, tree-based. Most computationally efficient." },
+              { term: "Feature Selection vs Extraction", def: "Selection = choose best existing features. Extraction = CREATE new features (data transformed to new space)." },
+            ]
+          },
+        ]
+      },
+      {
+        id: "unsupervised", title: "🔍 Unsupervised Learning", color: "#ec4899",
+        subsections: [
+          {
+            title: "K-Means Clustering", content: [
+              { term: "K-Means Steps", def: "1) Choose k. 2) Randomly place k centroids. 3) Assign each point to nearest centroid. 4) Recompute centroid = mean of cluster. 5) Repeat until convergence." },
+              { term: "Stopping Criteria", def: "Centroids stop changing; all points stay in same cluster; min error reached; max iterations hit." },
+              { term: "WCSS", def: "Within-Cluster Sum of Squares. Sum of squared distances from each point to its centroid. K-Means minimizes this." },
+              { term: "Elbow Method", def: "Plot WCSS for various k values. Pick the 'elbow' (diminishing returns inflection point)." },
+              { term: "Silhouette Score", def: "For each point: a = avg dist to own cluster, b = avg dist to nearest other cluster. Score = (b-a)/max(a,b). Range -1 to +1. Higher = better." },
+              { term: "K-Means Pros", def: "Easy, fast, scalable (roughly linear time), converges to local minimum." },
+              { term: "K-Means Cons", def: "Must choose k, sensitive to outliers and initial centroids, struggles with non-spherical clusters." },
+            ]
+          },
+          {
+            title: "PCA (Principal Component Analysis)", content: [
+              { term: "PCA Goal", def: "Reduce dimensionality while retaining essential information. Finds directions of maximum variance." },
+              { term: "Principal Components (PCs)", def: "New features = linear combinations of original features. Orthogonal to each other. Ordered by variance captured." },
+              { term: "PCA Steps", def: "1) Standardize data. 2) Compute covariance matrix. 3) Compute eigenvectors & eigenvalues. 4) Select top d PCs. 5) Project data." },
+              { term: "Covariance Matrix", def: "DxD matrix. Diagonal = variance. Off-diagonal = covariance between feature pairs." },
+              { term: "Eigenvectors", def: "Direction of maximum variance (the new axes / PCs)." },
+              { term: "Eigenvalues", def: "Amount of variance captured along corresponding eigenvector. Rank highest first." },
+              { term: "Scree Plot", def: "Plot of variance explained by each PC. Use elbow or cumulative 80-90% threshold to choose d." },
+              { term: "PCA Benefits", def: "Reduces dimensions, reduces noise, enables visualization (50D→2D), speeds up model training." },
+              { term: "PCA Limitations", def: "Linear only, components hard to interpret, loses some information, sensitive to data scale." },
+            ]
+          },
+        ]
+      }
+    ];
+
+    const quickCards = [
+      { label: "DS Life Cycle", val: "Collect → Process → Explore/Viz → Analyze/ML → Insight (NOT linear!)" },
+      { label: "5 Vs of Big Data", val: "Volume, Velocity, Variety, Veracity, Value" },
+      { label: "Hypothesis Test Order", val: "H₀ → Hₐ → α → Test → Data → Statistic → p-value → Decision" },
+      { label: "p-value rule", val: "p ≤ α → Reject H₀ (significant). p > α → Fail to reject." },
+      { label: "68-95-99 Rule", val: "68% within 1σ, 95% within 2σ, 99% within 3σ" },
+      { label: "CLT", val: "n ≥ 30 → sample means ~ Normal, regardless of original distribution" },
+      { label: "Confusion Matrix", val: "TP=correct+, TN=correct−, FP=Type I error, FN=Type II error" },
+      { label: "Precision vs Recall", val: "Precision: TP/(TP+FP). Recall: TP/(TP+FN). F1 = harmonic mean." },
+      { label: "Bias vs Variance", val: "High bias=underfitting, High variance=overfitting. Balance both!" },
+      { label: "KNN extremes", val: "k=1 → overfit (jagged boundary), k=N → underfit (too general)" },
+      { label: "Joins", val: "INNER=both match, LEFT=all left, RIGHT=all right, FULL OUTER=all" },
+      { label: "Missing Data Types", val: "MCAR=random, MAR=due to other data, MNAR=related to missing value itself" },
+      { label: "Regularization", val: "LASSO (L1)=zeroes out features, Ridge (L2)=shrinks all, Elastic-Net=both" },
+      { label: "Normalization vs Standardization", val: "Norm: scale to [0,1], sensitive to outliers. Std: mean=0, SD=1, robust to outliers." },
+      { label: "K-Fold CV", val: "k=10 most common. LOOCV for small datasets (n<1000). Use for hyperparameter tuning." },
+      { term: "Overfitting solutions", val: "More data, regularization, pruning, cross-validation, ensembles (Random Forests)" },
+    ];
+
+    let activeSection = "overview";
+    let openSubs = {};
+
+    function renderSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.innerHTML = sections.map(s => `
+    <button onclick="selectSection('${s.id}')" id="btn-${s.id}"
+      style="--color:${s.color}" class="${s.id === activeSection ? 'active' : ''}">
+      ${s.title}
+    </button>
+  `).join('');
+    }
+
+    function renderMain(filterText) {
+      const main = document.getElementById('main');
+      if (filterText) {
+        const results = sections.map(section => ({
+          ...section,
+          subsections: section.subsections.map(sub => ({
+            ...sub,
+            content: sub.content.filter(item =>
+              item.term.toLowerCase().includes(filterText.toLowerCase()) ||
+              item.def.toLowerCase().includes(filterText.toLowerCase())
+            )
+          })).filter(sub => sub.content.length > 0)
+        })).filter(s => s.subsections.length > 0);
+
+        if (results.length === 0) {
+          main.innerHTML = `<p class="no-results">No results found for "<strong>${filterText}</strong>".</p>`;
+          return;
+        }
+
+        main.innerHTML = `<p class="search-intro">Results for "<strong style="color:#e2e8f0">${filterText}</strong>":</p>` +
+          results.map(section => `
+        <div class="search-section">
+          <h2 style="color:${section.color}">${section.title}</h2>
+          ${section.subsections.map(sub => `
+            <div class="search-sub-title">${sub.title}</div>
+            ${sub.content.map(item => `
+              <div class="term-card" style="--color:${section.color}">
+                <div class="term-name">${item.term}</div>
+                <div class="term-def">${item.def}</div>
+              </div>
+            `).join('')}
+          `).join('')}
+        </div>
+      `).join('');
+        return;
+      }
+
+      const section = sections.find(s => s.id === activeSection);
+      const totalTerms = section.subsections.reduce((acc, s) => acc + s.content.length, 0);
+      main.innerHTML = `
+    <div class="section-header">
+      <h2 style="color:${section.color}">${section.title}</h2>
+      <p>${totalTerms} terms across ${section.subsections.length} topics</p>
+    </div>
+    ${section.subsections.map((sub, si) => {
+        const key = `${activeSection}-${si}`;
+        const isOpen = openSubs[key] !== false;
+        return `
+        <div class="subsection">
+          <button class="subsection-toggle ${isOpen ? 'open' : ''}" onclick="toggleSub('${key}', ${si})">
+            ${sub.title}
+            <span class="arrow">▼</span>
+          </button>
+          <div class="subsection-body ${isOpen ? 'open' : ''}">
+            ${sub.content.map(item => `
+              <div class="term-card" style="--color:${section.color}">
+                <div class="term-name">${item.term}</div>
+                <div class="term-def">${item.def}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      }).join('')}
+  `;
+    }
+
+    function renderQuickGrid() {
+      document.getElementById('quick-grid').innerHTML = quickCards.map(q => `
+    <div class="quick-card">
+      <div class="quick-label">${q.label}</div>
+      <div class="quick-val">${q.val}</div>
+    </div>
+  `).join('');
+    }
+
+    function selectSection(id) {
+      activeSection = id;
+      renderSidebar();
+      renderMain('');
+    }
+
+    function toggleSub(key, si) {
+      openSubs[key] = openSubs[key] === false ? true : false;
+      renderMain('');
+    }
+
+    function handleSearch(val) {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.style.display = val ? 'none' : 'block';
+      renderMain(val.trim());
+    }
+
+    // Init
+    renderSidebar();
+    renderMain('');
+    renderQuickGrid();
+  </script>
+</body>
+
+</html>
